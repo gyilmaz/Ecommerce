@@ -16,13 +16,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.ecommerce.controllers.CartController;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @Table(name = "cart")
 public class Cart {
-	
-	@Id
+    Logger logger= LoggerFactory.getLogger(Cart.class);
+
+    @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty
 	@Column
@@ -77,6 +81,7 @@ public class Cart {
 		if(items == null) {
 			items = new ArrayList<>();
 		}
+		logger.info("Added item is "+ item);
 		items.add(item);
 		if(total == null) {
 			total = new BigDecimal(0);
@@ -88,6 +93,7 @@ public class Cart {
 		if(items == null) {
 			items = new ArrayList<>();
 		}
+		logger.info("Removed item is "+ item);
 		items.remove(item);
 		if(total == null) {
 			total = new BigDecimal(0);

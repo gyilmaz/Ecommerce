@@ -134,4 +134,86 @@ public class CartControllerTest {
     }
 
 
+    @Test
+    public void TestAddCartInvalidUser(){
+        Item item=new Item();
+        item.setId(1l);
+        item.setName("MacBook");
+        item.setDescription("13 Gray");
+        item.setPrice(BigDecimal.valueOf(1200.13));
+
+        Item item2=new Item();
+        item2.setId(2l);
+        item2.setName("MacBook");
+        item2.setDescription("13 Black");
+        item2.setPrice(BigDecimal.valueOf(1110.03));
+
+        List<Item> listOfItems= new ArrayList<>();
+        listOfItems.add(item);
+        listOfItems.add(item2);
+
+        Cart cart= new Cart();
+        cart.setId(1l);
+        cart.setItems(listOfItems);
+        cart.setTotal(BigDecimal.valueOf(11230.03));
+
+        User user= new User();
+        user.setUsername("abc");
+        user.setPassword("abcdefg");
+        user.setCart(cart);
+
+        doReturn(user).when(userRepo).findByUsername("xyz");
+        doReturn(Optional.of(item2)).when(itemRepo).findById(2l);
+        ModifyCartRequest modifyCartRequest=new ModifyCartRequest();
+        modifyCartRequest.setItemId(item2.getId());
+        modifyCartRequest.setQuantity(2);
+        modifyCartRequest.setUsername(user.getUsername());
+
+        final ResponseEntity<Cart> response= cartController.addTocart(modifyCartRequest);
+
+        assertNotNull(response);
+        assertEquals(404,response.getStatusCode().value());
+    }
+
+    @Test
+    public void TestAddCartInvalidItem(){
+        Item item=new Item();
+        item.setId(1l);
+        item.setName("MacBook");
+        item.setDescription("13 Gray");
+        item.setPrice(BigDecimal.valueOf(1200.13));
+
+        Item item3=new Item();
+        item3.setId(2l);
+        item3.setName("MacBook");
+        item3.setDescription("13 Black");
+        item3.setPrice(BigDecimal.valueOf(1110.03));
+
+        List<Item> listOfItems= new ArrayList<>();
+
+        Cart cart= new Cart();
+        cart.setId(1l);
+        cart.setItems(listOfItems);
+        cart.setTotal(BigDecimal.valueOf(11230.03));
+
+        User user= new User();
+        user.setUsername("abc");
+        user.setPassword("abcdefg");
+        user.setCart(cart);
+
+        doReturn(user).when(userRepo).findByUsername(user.getUsername());
+        doReturn(Optional.of(item)).when(itemRepo).findById(1l);
+        ModifyCartRequest modifyCartRequest=new ModifyCartRequest();
+        modifyCartRequest.setItemId(3l);
+        modifyCartRequest.setQuantity(2);
+        modifyCartRequest.setUsername(user.getUsername());
+
+        final ResponseEntity<Cart> response= cartController.addTocart(modifyCartRequest);
+
+        assertNotNull(response);
+        assertEquals(404,response.getStatusCode().value());
+
+    }
+
+
 }

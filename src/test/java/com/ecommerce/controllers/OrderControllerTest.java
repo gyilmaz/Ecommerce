@@ -126,5 +126,49 @@ public class OrderControllerTest {
     }
 
 
+    @Test
+    public void TestGetOrdersForInvalidUser(){
+        Item item=new Item();
+        item.setId(1l);
+        item.setName("MacBook");
+        item.setDescription("13 Gray");
+        item.setPrice(BigDecimal.valueOf(1200.13));
+
+        Item item2=new Item();
+        item2.setId(2l);
+        item2.setName("MacBook");
+        item2.setDescription("13 Black");
+        item2.setPrice(BigDecimal.valueOf(1110.03));
+
+        List<Item> listOfItems= new ArrayList<>();
+        listOfItems.add(item);
+        listOfItems.add(item2);
+
+        Cart cart= new Cart();
+        cart.setId(1l);
+        cart.setItems(listOfItems);
+        cart.setTotal(BigDecimal.valueOf(11230.03));
+
+        User user= new User();
+        user.setUsername("abc");
+        user.setPassword("abcdefg");
+        user.setCart(cart);
+
+        doReturn(user).when(userRepo).findByUsername("xyz");
+        UserOrder order = UserOrder.createFromCart(user.getCart());
+        List<UserOrder> list= new ArrayList<>();
+        list.add(order);
+        order.setId(2l);
+        list.add(order);
+        doReturn(list).when(orderRepo).findByUser(user);
+
+        final ResponseEntity<List<UserOrder>> response= orderController.getOrdersForUser(user.getUsername());
+
+        assertNotNull(response);
+        assertEquals(404, response.getStatusCode().value());
+
+    }
+
+
 
 }
