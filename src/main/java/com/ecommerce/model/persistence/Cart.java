@@ -6,17 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.ecommerce.controllers.CartController;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +17,8 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "cart")
 public class Cart {
+	@Transient
+	@JsonIgnore
     Logger logger= LoggerFactory.getLogger(Cart.class);
 
     @Id
