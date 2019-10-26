@@ -1,7 +1,6 @@
 package com.ecommerce.security;
 
 import com.auth0.jwt.JWT;
-import com.ecommerce.controllers.UserController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
