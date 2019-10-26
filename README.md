@@ -28,4 +28,4 @@ Sample Splunk Query
 
 ## Pipeline
 Jenkins pipline is build for develop branch
-Pipeline trigger try
+Pipeline trigger try2
