@@ -33,19 +33,27 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
+        String username= "unknown user";
         try {
             User creds = new ObjectMapper()
                     .readValue(req.getInputStream(), User.class);
-            logger.info(creds.getUsername() + " is attempting authentication");
+            logger.info(username+ " is attempting authentication");
+            username=creds.getUsername();
 
-            return authenticationManager.authenticate(
+            Authentication auth= authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             creds.getUsername(),
                             creds.getPassword(),
                             new ArrayList<>())
             );
+            if(auth.isAuthenticated()) {
+                return auth;
+            }else{
+            logger.info(username + " authentication is failed");
+            }
+            auth.setAuthenticated(false);
+            return auth;
         } catch (IOException e) {
-            logger.info("Authentication is failed");
             throw new RuntimeException(e);
         }
     }
