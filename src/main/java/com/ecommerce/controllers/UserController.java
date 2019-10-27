@@ -51,21 +51,27 @@ public class UserController {
 	@PostMapping("/create")
 	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
 		logger.info("User create is requested");
-		User user = new User();
-		user.setUsername(createUserRequest.getUsername());
-		Cart cart = new Cart();
-		cartRepository.save(cart);
-		user.setCart(cart);
-		if(createUserRequest.getPassword().length()<7){
-			logger.error("Please enter at least seven character");
-			return ResponseEntity.badRequest().build();
-		}else if (!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
-			logger.error("Passwords are not match");
-			return ResponseEntity.badRequest().build();
+		User checkUserName = userRepository.findByUsername(createUserRequest.getUsername());
+		if(checkUserName==null) {
+			User user = new User();
+			user.setUsername(createUserRequest.getUsername());
+
+			Cart cart = new Cart();
+			cartRepository.save(cart);
+			user.setCart(cart);
+			if (createUserRequest.getPassword().length() < 7) {
+				logger.error("Please enter at least seven character");
+				return ResponseEntity.status(HttpStatus.LENGTH_REQUIRED).build();
+			} else if (!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())) {
+				logger.error("Passwords are not match");
+				return ResponseEntity.badRequest().build();
+			}
+			user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
+			userRepository.save(user);
+			return ResponseEntity.ok(user);
+		}else{
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
-		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
-		userRepository.save(user);
-		return ResponseEntity.ok(user);
 	}
 	
 }

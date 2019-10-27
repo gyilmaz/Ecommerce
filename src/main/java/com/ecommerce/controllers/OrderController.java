@@ -38,9 +38,13 @@ public class OrderController {
 			return ResponseEntity.notFound().build();
 		}
 		UserOrder order = UserOrder.createFromCart(user.getCart());
+		if(user.getCart()==null){
+			logger.warn("Cart is empty");
+			return ResponseEntity.badRequest().build();
+		}
 		orderRepository.save(order);
 		logger.info(username +"submit order for" + order.getItems());
-		return ResponseEntity.ok(order);
+			return ResponseEntity.ok(order);
 	}
 	
 	@GetMapping("/history/{username}")
