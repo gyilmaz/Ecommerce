@@ -1,7 +1,6 @@
 package com.ecommerce.security;
 
 import com.auth0.jwt.JWT;
-import com.ecommerce.controllers.UserController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +33,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
-        logger.info("Attempting authentication");
         try {
-           User creds = new ObjectMapper()
+            User creds = new ObjectMapper()
                     .readValue(req.getInputStream(), User.class);
+            logger.info(creds.getUsername() + " is attempting authentication");
+
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             creds.getUsername(),
@@ -45,6 +45,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             new ArrayList<>())
             );
         } catch (IOException e) {
+            logger.info("Authentication is failed");
             throw new RuntimeException(e);
         }
     }

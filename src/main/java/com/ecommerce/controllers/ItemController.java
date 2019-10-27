@@ -1,6 +1,7 @@
 package com.ecommerce.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ecommerce.model.persistence.Item;
 import com.ecommerce.model.persistence.repositories.ItemRepository;
@@ -25,22 +26,22 @@ public class ItemController {
 	@GetMapping
 	public ResponseEntity<List<Item>> getItems() {
 		logger.info("Retrieving all items");
-		return ResponseEntity.ok(itemRepository.findAll());
+		List<Item> items=itemRepository.findAll();
+		return items.size() == 0 ? ResponseEntity.notFound().build() : ResponseEntity.ok(items);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Item> getItemById(@PathVariable Long id) {
 		logger.info("Retrieving item id " + id);
-		return ResponseEntity.of(itemRepository.findById(id));
+		Optional<Item> item=itemRepository.findById(id);
+		return item == null ? ResponseEntity.notFound().build() : ResponseEntity.of(item);
 	}
 	
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Item>> getItemsByName(@PathVariable String name) {
 		List<Item> items = itemRepository.findByName(name);
 		logger.info("Retrieving by "+ name +" item/s is/are " + items.toString() );
-		return items == null || items.isEmpty() ? ResponseEntity.notFound().build()
-				: ResponseEntity.ok(items);
-			
+		return items == null || items.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(items);
 	}
 	
 }
