@@ -23,11 +23,9 @@ Go to splunk ```{{host}}:8000 ```to see the logs.
 
 ##Splunk
 Sample Splunk Query
-```host=splunkforwarder| regex message=(?.(?=Log.)) | stats latest(trace) as trace latest(class)```
- as class latest(message) as message by thread
+```host=splunkforwarder| regex message=(?.(?=Log.)) | stats latest(trace) as trace latest(class) as class latest(message)```
 
 ## Pipeline
 Jenkins pipline is build for develop branch
 Pipeline trigger 
-
-https://recordit.co/t5Khp3Y1oQ
+![](jenkins.gif)
